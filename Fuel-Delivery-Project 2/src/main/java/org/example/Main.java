@@ -2,10 +2,28 @@ package org.example;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+//Task 2
+    Scanner scanner = new Scanner(System.in);
+
+System.out.print(
+        "Enter custom VAT rate for Private clients (%): ");
+
+        BigDecimal customGasolineExcise =
+                new BigDecimal(
+                        scanner.next().replace(",", "."));
+
+System.out.print(
+        "Enter custom Excise rate for Gasoline: ");
+        BigDecimal customVatRate =
+                new BigDecimal(
+                        scanner.next().replace(",", "."));
+
 
         List<Shipment> shipments =
                 JsonReader.readShipments();
@@ -24,6 +42,7 @@ public class Main {
         }
 
         CsvWriter.writeTask1(shipments);
+        CsvWriter.writeTask2(shipments, customVatRate, customGasolineExcise);
 
         for (Shipment shipment : shipments) {
             // skaičiavimai

@@ -63,10 +63,9 @@ public class PriceCalculator {
                 break;
 
             default:
-                System.out.println(
-                        "UNKNOWN_TYPE: " + shipment.getType());
-
-                return BigDecimal.ZERO;
+                throw new IllegalArgumentException(
+                        "Unknown fuel type: "
+                                + shipment.getType());
 
         }
 
@@ -76,6 +75,40 @@ public class PriceCalculator {
                 .setScale(2, RoundingMode.HALF_UP);
 
     }
+
+    // Task 2 - Custom Excise Tax
+
+    public static BigDecimal calculateCustomExciseTax(
+            Shipment shipment,
+            BigDecimal gasolineExciseRate) {
+
+        BigDecimal exciseRate;
+
+        switch (shipment.getType()) {
+
+            case "GASOLINE":
+                exciseRate = gasolineExciseRate;
+                break;
+
+            case "DIESEL":
+                exciseRate = new BigDecimal("0.33");
+                break;
+
+            case "LPG":
+                exciseRate = new BigDecimal("0.18");
+                break;
+
+            default:
+                exciseRate = BigDecimal.ZERO;
+        }
+
+        return BigDecimal.valueOf(
+                        shipment.getVolume())
+                .multiply(exciseRate)
+                .setScale(2,
+                        RoundingMode.HALF_UP);
+    }
+
 
     //PVM skaiciavimai
 
@@ -93,6 +126,23 @@ public class PriceCalculator {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
+    // Task 2 - Custom VAT
+
+    public static BigDecimal
+    calculateCustomVat(BigDecimal amount, BigDecimal vatRatePercent) {
+
+        BigDecimal vatRate =
+                vatRatePercent.divide(
+                        new BigDecimal("100"),
+                        4,
+                        RoundingMode.HALF_UP);
+
+        return amount.multiply(vatRate)
+                .setScale(
+                        2,
+                        RoundingMode.HALF_UP);
+    }
+
 
     //Grand Total paskaiciavimai
 
@@ -108,4 +158,7 @@ public class PriceCalculator {
                 .add(vat)
                 .setScale(2, RoundingMode.HALF_UP);
     }
+
+
+
 }

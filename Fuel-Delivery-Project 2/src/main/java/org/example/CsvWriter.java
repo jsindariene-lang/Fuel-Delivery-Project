@@ -53,6 +53,60 @@ public class CsvWriter {
         writer.close();
     }
 
+    public static void writeTask2(
+            List<Shipment> shipments,
+            BigDecimal customVatRate,
+            BigDecimal customGasolineExcise)
+            throws Exception {
+
+        PrintWriter writer =
+                new PrintWriter("output/task2.csv");
+
+        writer.println(
+                "ShipmentID,NetFuelPrice,LogisticsCost,TotalTax,GrandTotal");
+
+        for (Shipment shipment : shipments) {
+
+            BigDecimal netFuelPrice =
+                    PriceCalculator.calculateNetFuelPrice(shipment);
+
+            BigDecimal logisticsCost =
+                    PriceCalculator.calculateLogisticsCost(shipment);
+
+            BigDecimal exciseTax =
+                    PriceCalculator.calculateCustomExciseTax(
+                            shipment,
+                            customGasolineExcise);
+
+            BigDecimal vat =
+                    PriceCalculator.calculateCustomVat(
+                            netFuelPrice,
+                            customVatRate);
+
+            BigDecimal grandTotal =
+                    PriceCalculator.calculateGrandTotal(
+                            netFuelPrice,
+                            logisticsCost,
+                            exciseTax,
+                            vat);
+
+            BigDecimal totalTax =
+                    exciseTax.add(vat);
+
+            writer.println(
+                    shipment.getId() + "," +
+                            netFuelPrice + "," +
+                            logisticsCost + "," +
+                            totalTax + "," +
+                            grandTotal);
+        }
+
+        writer.close();
+
+        System.out.println(
+                "task2.csv successfully created");
+    }
+
     public static void writeErrors(
             List<ErrorRecord> errors) throws Exception {
 
@@ -73,5 +127,6 @@ public class CsvWriter {
         }
 
         writer.close();
+        System.out.println("errors.csv successfully created");
     }
 }
